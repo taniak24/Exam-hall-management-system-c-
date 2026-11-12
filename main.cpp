@@ -27,13 +27,32 @@ struct hall_data
 vector<group_data> groups;
 vector<hall_data>  halls;
 
+void print_menu()
+{
+    cout << "\n========== MAIN MENU ==========\n"
+            " 1.Show groups\n"
+            " 2.Show halls\n"
+            " 3.Add a group\n"
+            " 4.Add a hall\n"
+            " 5.Delete a group\n"
+            " 6.Delete a hall\n"
+            " 7.Edit a group\n"
+            " 8.Edit a hall\n"
+            " 9.Search\n"
+            "10.Sort groups\n"
+            "11.Sort halls\n"
+            "12.Assign groups (Greedy)\n"
+            " 0.Exit\n";
+}
+
 int read_int(const string& prompt, int min_value, int max_value)
 {
     while(true)
     {
         cout << prompt;
         string line;
-        if (!getline(cin, line))
+
+        if(!getline(cin, line))
         {
             exit(0);
         }
@@ -41,9 +60,9 @@ int read_int(const string& prompt, int min_value, int max_value)
         int value;
         char extra;
 
-        if (ss >> value && !(ss >> extra))
+        if(ss >> value && !(ss >> extra))
         {
-            if (value >= min_value && value <= max_value) return value;
+            if(value >= min_value && value <= max_value) return value;
             cout << "ERROR. Please enter number between " << min_value << " and " << max_value << endl;
         }
         else
@@ -55,30 +74,36 @@ int read_int(const string& prompt, int min_value, int max_value)
 
 string read_word(const string& prompt)
 {
-    while (true)
+    while(true)
     {
         cout << prompt;
         string line;
-        if (!getline(cin, line)) exit(0);
 
+        if(!getline(cin, line))
+        {
+            exit(0);
+        }
         stringstream ss(line);
         string word, extra;
 
-        if (ss >> word && !(ss >> extra)) return word;
+        if (ss >> word && !(ss >> extra))
+        {
+            return word;
+        }
         cout << "  Error: enter one word without spaces" << endl;
     }
 }
 
 int find_group_index(int id)
 {
-    for (size_t i = 0; i < groups.size(); i++)
+    for(size_t i = 0; i < groups.size(); i++)
         if (groups[i].id == id) return (int)i;
     return -1;
 }
 
 int find_hall_index(int id)
 {
-    for (size_t i = 0; i < halls.size(); i++)
+    for(size_t i = 0; i < halls.size(); i++)
         if (halls[i].id == id) return (int)i;
     return -1;
 }
@@ -86,7 +111,7 @@ int find_hall_index(int id)
 void load_groups(const string& file_name)
 {
     ifstream in(file_name);
-    if (!in)
+    if(!in)
     {
         cout << "File " << file_name << " was not found" << endl;
         return;
@@ -94,20 +119,22 @@ void load_groups(const string& file_name)
     string line;
     int line_number = 0, loaded = 0;
 
-    while (getline(in, line))
+    while(getline(in, line))
     {
         line_number++;
-        if (line.empty()) continue;
-
+        if(line.empty())
+        {
+            continue;
+        }
         stringstream ss(line);
         group_data g;
 
-        if (!(ss >> g.id >> g.specialty >> g.students >> g.exam) || g.students <= 0 || g.id <= 0)
+        if(!(ss >> g.id >> g.specialty >> g.students >> g.exam) || g.students <= 0 || g.id <= 0)
         {
             cout << "  Skipped line " << line_number << " (invalid data): " << line << endl;
             continue;
         }
-        if (find_group_index(g.id) != -1)
+        if(find_group_index(g.id) != -1)
         {
             cout << "  Skipped line " << line_number << " (duplicate ID " << g.id << ")" << endl;
             continue;
@@ -122,7 +149,7 @@ void load_halls(const string& file_name)
 {
     ifstream in(file_name);
 
-    if (!in)
+    if(!in)
     {
         cout << "File " << file_name << " was not found" << endl;
         return;
@@ -138,12 +165,12 @@ void load_halls(const string& file_name)
         stringstream ss(line);
         hall_data h;
 
-        if (!(ss >> h.id >> h.capacity >> h.building) || h.capacity <= 0 || h.id <= 0)
+        if(!(ss >> h.id >> h.capacity >> h.building) || h.capacity <= 0 || h.id <= 0)
         {
             cout << "  Skipped line " << line_number << " (invalid data): " << line << endl;
             continue;
         }
-        if (find_hall_index(h.id) != -1)
+        if(find_hall_index(h.id) != -1)
         {
             cout << "  Skipped line " << line_number << " (duplicate ID " << h.id << ")" << endl;
             continue;
@@ -156,10 +183,10 @@ void load_halls(const string& file_name)
 
 void print_groups()
 {
-    if(groups.empty()) 
-    { 
-        cout << "No groups have been entered.\n"; 
-        return; 
+    if(groups.empty())
+    {
+        cout << "No groups have been entered.\n";
+        return;
     }
 
     cout << left << setw(8) << "ID" << setw(20) << "Specialty" << setw(12) << "Students" << "Exam" << endl;
@@ -171,10 +198,10 @@ void print_groups()
 
 void print_halls()
 {
-    if(halls.empty()) 
-    { 
-        cout << "No halls have been entered\n"; 
-        return; 
+    if(halls.empty())
+    {
+        cout << "No halls have been entered\n";
+        return;
     }
 
     cout << left << setw(8) << "ID" << setw(12) << "Capacity" << "Building" << endl;
@@ -331,7 +358,7 @@ void search_menu()
         {
             if(h.capacity >= x)
             {
-                cout << "Hall " << h.id << ": " << h.capacity << " seats, building " << h.building << "\n";
+                cout << "Hall " << h.id << ": " << h.capacity << " seats, building " << h.building << endl;
                 found = true;
             }
         }
@@ -339,7 +366,7 @@ void search_menu()
 
     if(!found)
     {
-        cout << "No results found";
+        cout << "No results found" << endl;
     }
 }
 
@@ -472,7 +499,6 @@ void merge_sort_halls(vector<hall_data>& list, int left, int right, int sort_cho
         return;
     }
 
-
     int middle = (left + right)/2;
 
     merge_sort_halls(list, left, middle, sort_choice);
@@ -499,7 +525,7 @@ void sort_groups_menu()
 
 void sort_halls_menu()
 {
-    if (halls.empty())
+    if(halls.empty())
     {
         cout << "No halls to sort";
         return;
@@ -536,7 +562,7 @@ int used_halls(const distribution_result& r)
 
 void print_result(const distribution_result& r, const vector<group_data>& gs)
 {
-    for (size_t h = 0; h < halls.size(); h++)
+    for(size_t h = 0; h < halls.size(); h++)
     {
         if(r.hall_groups[h].empty())
         {
@@ -546,7 +572,7 @@ void print_result(const distribution_result& r, const vector<group_data>& gs)
         int used = halls[h].capacity - r.free_seats[h];
         cout << "Hall " << halls[h].id << " (" << halls[h].building << ", " << used << "/" << halls[h].capacity << " seats): ";
 
-        for (size_t k = 0; k < r.hall_groups[h].size(); k++)
+        for(size_t k = 0; k < r.hall_groups[h].size(); k++)
         {
             const group_data& g = gs[r.hall_groups[h][k]];
             cout << (k ? ", " : "") << "Group " << g.id << " (" << g.students << ")";
@@ -623,30 +649,12 @@ void run_greedy()
     print_result(r, sorted);
 }
 
-void print_menu()
-{
-    cout << "\n========== MAIN MENU ==========\n"
-            " 1.Show groups\n"
-            " 2.Show halls\n"
-            " 3.Add a group\n"
-            " 4.Add a hall\n"
-            " 5.Delete a group\n"
-            " 6.Delete a hall\n"
-            " 7.Edit a group\n"
-            " 8.Edit a hall\n"
-            " 9.Search\n"
-            "10.Sort groups\n"
-            "11.Sort halls\n"
-            "12.Assign groups (Greedy)\n"
-            " 0.Exit\n";
-}
-
 int main()
 {
     load_groups("groups.txt");
     load_halls("halls.txt");
 
-    while (true)
+    while(true)
     {
         print_menu();
         int c = read_int("Choice: ", 0, 12);
